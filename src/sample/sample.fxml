@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.media.MediaView?>
+<?import org.controlsfx.control.RangeSlider?>
+
+<GridPane alignment="center" hgap="10" prefHeight="888.0" prefWidth="888.0" vgap="10" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+   <columnConstraints>
+      <ColumnConstraints />
+      <ColumnConstraints minWidth="10.0" prefWidth="100.0" />
+      <ColumnConstraints />
+      <ColumnConstraints />
+      <ColumnConstraints />
+      <ColumnConstraints />
+      <ColumnConstraints />
+      <ColumnConstraints />
+      <ColumnConstraints />
+      <ColumnConstraints />
+      <ColumnConstraints />
+      <ColumnConstraints />
+      <ColumnConstraints />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+   </rowConstraints>
+   <children>
+      <MediaView fx:id="mv" fitHeight="200.0" fitWidth="400.0" />
+      <MediaView fx:id="psmMv" fitHeight="200.0" fitWidth="400.0" GridPane.columnIndex="1" />
+      <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+         <children>
+            <Label fx:id="mainSliderLabel" text="Timeline" />
+            <Label fx:id="loopInterval" text="Loop Interval">
+               <padding>
+                  <Insets top="23.0" />
+               </padding>
+            </Label>
+            <Label fx:id="sliderVal" contentDisplay="BOTTOM" text="Slider Value">
+               <padding>
+                  <Insets top="25.0" />
+               </padding></Label>
+            <Label fx:id="upperLimitVal" contentDisplay="TOP" text="Upper Lim Val">
+               <padding>
+                  <Insets top="20.0" />
+               </padding>
+            </Label>
+         </children>
+      </VBox>
+      <VBox prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="1">
+         <children>
+            <Slider fx:id="mainSlider" prefHeight="14.0" prefWidth="239.0" showTickLabels="true" showTickMarks="true" />
+            <RangeSlider fx:id="sliderLimits" prefHeight="14.0" prefWidth="239.0" stylesheets="@Stylesheet.css" />
+            <ToolBar prefHeight="40.0" prefWidth="200.0">
+               <items>
+                  <Button fx:id="playButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" stylesheets="@Stylesheet.css" />
+                  <Button fx:id="stopButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" stylesheets="@Stylesheet.css" text="Stop" />
+                  <Button fx:id="loopButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" stylesheets="@Stylesheet.css" text="Loop" />
+               </items>
+            </ToolBar>
+         </children>
+      </VBox>
+   </children>
+</GridPane>
