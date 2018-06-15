@@ -1,6 +1,5 @@
 package sample;
 
-import com.sun.javafx.css.Stylesheet;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -10,13 +9,14 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.util.Duration;
 import org.controlsfx.control.RangeSlider;
+import javafx.scene.image.ImageView;
 
 import java.io.File;
 import java.net.URL;
@@ -32,58 +32,85 @@ public class Controller implements Initializable {
     @FXML
     private Button stopButton;
     @FXML
-    private Button loopButton;
+    private ToggleButton loopButton;
     @FXML
     private Slider mainSlider;
     @FXML
     private MediaView mv;
     @FXML
+    private MediaView psmMv;
+    @FXML
     private Label sliderVal;
     @FXML
     private Label upperLimitVal;
     @FXML
-    private MediaView psmMv;
-
-    private MediaPlayer mp;
-    private Media me;
-
+    private ImageView noVideoMv;
+    @FXML
+    private ImageView noVideoPsm;
     @FXML
     private Label mainSliderLabel;
 
-    Boolean loopActive = false;
-    Duration stopTime;
+    private MediaPlayer mp;
+    private Media me;
+    private MediaPlayer psmMp;
+    private Media psmMe;
+    private Boolean loopActive = false;
+    private Duration stopTime;
+    private MediaPlayer biggerDuration;
+    private MediaPlayer smallerDuration;
+
 
     /////////////////////////////////////////////////////
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
 
-
         String path = new File("src/sample/media/Sample video.mp4").getAbsolutePath();
         me = new Media(new File(path).toURI().toString());
         mp = new MediaPlayer(me);
-        mv.setMediaPlayer(mp);                                         //Setting up the video stuff
+        mv.setMediaPlayer(mp);                                         //Setting up the video  1
+
+        String path2 = new File("src/sample/media/Sample video 2.mp4").getAbsolutePath();
+        psmMe = new Media(new File(path2).toURI().toString());
+        psmMp = new MediaPlayer(psmMe);
+        psmMv.setMediaPlayer(psmMp);                                         //Setting up the video  2
+
+        File file = new File("src/sample/media/no video.jpg");
+        Image image = new Image(file.toURI().toString());
+        ImageView noVideoMv = new ImageView(image);
+        ImageView noVideoPsm = new ImageView(image);
 
         Custom_Slider customSlider = new Custom_Slider();
+        biggerDuration = mp;
+        smallerDuration = mp;
+
+
+
 
         mp.setOnReady(new Runnable() {
             @Override
             public void run() {
-                mainSlider = customSlider.setMainSliderValues(mainSlider, mp);          //Sets up the timescale in terms of seconds
-                sliderLimits = customSlider.setLimitValues(sliderLimits, mp);
+
+                biggerDuration = customSlider.setBiggerDuration(mp, psmMp);
+                smallerDuration = customSlider.setSmallerDuration(mp, psmMp);
+
+                mainSlider = customSlider.setMainSliderValues(mainSlider, biggerDuration);          //Sets up the timescale in terms of seconds
+                sliderLimits = customSlider.setLimitValues(sliderLimits, biggerDuration);           // Uses the biggest video for timescale
 
             }
+
+
         });
 
-        mp.setOnPlaying(new Runnable() {
+
+        biggerDuration.setOnPlaying(new Runnable() {
             @Override
             public void run() {
                 // Listens to changes of video time
-                mp.currentTimeProperty().addListener(new ChangeListener<Duration>() {       //Allows slider to move w/ video
+                biggerDuration.currentTimeProperty().addListener(new ChangeListener<Duration>() {       //Allows slider to move w/ video
                     @Override
                     public void changed(ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) {
                         mainSlider.setValue(newValue.toSeconds());
-
 
 
                     }
@@ -101,11 +128,15 @@ public class Controller implements Initializable {
                 sliderVal.setText(Double.toString(mainSlider.getValue()));
                 if (mainSlider.getValue() == sliderLimits.getHighValue() && loopActive == false) {
                     mp.pause();
+                    psmMp.pause();
                 } else if (mainSlider.getValue() == sliderLimits.getHighValue() && loopActive == true) {
                     mp.seek(Duration.seconds(sliderLimits.getLowValue()));
+                    psmMp.seek(Duration.seconds(sliderLimits.getLowValue()));
                 }
             }
         });
+
+
         sliderLimits.highValueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> ov,
                                 Number old_val, Number new_val) {
@@ -114,34 +145,44 @@ public class Controller implements Initializable {
         });
         mainSlider.setOnMouseDragged(drag -> {
             mp.seek(Duration.seconds(mainSlider.getValue()));
+            psmMp.seek(Duration.seconds(mainSlider.getValue()));
+        });
+        mainSlider.setOnMouseClicked(click -> {
+            mp.seek(Duration.seconds(mainSlider.getValue()));
+            psmMp.seek(Duration.seconds(mainSlider.getValue()));
         });
         sliderLimits.setOnMouseDragged(drag -> {
             mp.pause();
+            psmMp.pause();
         });
 
         playButton.setOnAction(new EventHandler<ActionEvent>() {                        //Implements play action
             @Override
             public void handle(ActionEvent e) {
                 mp.play();
+                psmMp.play();
                 if (mainSlider.getValue() < sliderLimits.getLowValue() || mainSlider.getValue() > sliderLimits.getHighValue()) {
                     mp.seek(Duration.seconds(sliderLimits.getLowValue()));
+                    psmMp.seek(Duration.seconds(sliderLimits.getLowValue()));
                 }
             }
         });
         stopButton.setOnAction(new EventHandler<ActionEvent>() {                        //Implements stop action
             @Override
             public void handle(ActionEvent e) {
-                System.out.println(mp.getStatus());
-               // mp.setOnPaused(()-> System.out.println("player paused"));
-                stopTime = mp.getCurrentTime();
+                // mp.setOnPaused(()-> System.out.println("player paused"));
+                stopTime = biggerDuration.getCurrentTime();
                 mp.pause();
-                System.out.println(mp.getStatus());
+                psmMp.pause();
 
                 mp.setOnPaused(new Runnable() {
                     @Override
                     public void run() {
-                        System.out.println(mp.getStatus());
-                        mp.seek(stopTime);
+
+                        if (mainSlider.getValue() != sliderLimits.getHighValue()) {
+                            psmMp.seek(stopTime);
+                            mp.seek(stopTime);
+                        }
                     }
                 });
 
@@ -151,11 +192,9 @@ public class Controller implements Initializable {
             @Override
             public void handle(ActionEvent e) {
 
-                mp.play();
-                if(loopActive == true){
-                  loopActive = false;
-                }
-                else {
+                if (loopActive == true) {
+                    loopActive = false;
+                } else {
 
                     loopActive = true;
                 }

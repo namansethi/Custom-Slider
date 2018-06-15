@@ -5,7 +5,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Slider;
 import javafx.scene.media.MediaPlayer;
 import org.controlsfx.control.RangeSlider;
-import org.w3c.dom.ranges.Range;
 
 public class Custom_Slider {
 
@@ -39,7 +38,6 @@ public class Custom_Slider {
         mainSlider.valueProperty().addListener(new ChangeListener<Number>() {                  //Listener on main slider
             public void changed(ObservableValue<? extends Number> ov,
                                 Number old_val, Number new_val) {
-                //  SliderPos2.setText(String.format("%.2f", new_val));
 
                 if (new_val.doubleValue() < sliderLimits.getLowValue()) {
                     mainSlider.adjustValue(sliderLimits.getLowValue());
@@ -53,19 +51,35 @@ public class Custom_Slider {
         //Returns slider 2 as that is the main slider
     }
     //Sets up tick units, min and max values and the position of upper bound.
-    public RangeSlider setLimitValues(RangeSlider sliderLimits, MediaPlayer mp) {
-        sliderLimits.setMin(mp.getStartTime().toSeconds());
-        sliderLimits.setMax(mp.getStopTime().toSeconds());
-        sliderLimits.setLowValue(mp.getStartTime().toSeconds());
-        sliderLimits.setHighValue(mp.getTotalDuration().toSeconds());
+    public RangeSlider setLimitValues(RangeSlider sliderLimits, MediaPlayer biggerDuration) {
+        sliderLimits.setMin(biggerDuration.getStartTime().toSeconds());
+        sliderLimits.setMax(biggerDuration.getStopTime().toSeconds());
+        sliderLimits.setLowValue(biggerDuration.getStartTime().toSeconds());
+        sliderLimits.setHighValue(biggerDuration.getTotalDuration().toSeconds());
 
         return sliderLimits;
     }
     //Sets up tick units, min and max values and the position of main Slider.
-    public Slider setMainSliderValues(Slider mainSlider, MediaPlayer mp) {
-        mainSlider.setMin(mp.getStartTime().toSeconds());
-        mainSlider.setMax(mp.getStopTime().toSeconds());
+    public Slider setMainSliderValues(Slider mainSlider, MediaPlayer biggerDuration) {
+        mainSlider.setMin(biggerDuration.getStartTime().toSeconds());
+        mainSlider.setMax(biggerDuration.getStopTime().toSeconds());
         mainSlider.setMajorTickUnit(1);
         return mainSlider;
+    }
+    public MediaPlayer setBiggerDuration(MediaPlayer mp, MediaPlayer psmMp) {
+        System.out.println(psmMp.getTotalDuration());
+        if (mp.getTotalDuration().greaterThan(psmMp.getTotalDuration())){
+        return mp;
+
+        }
+        return psmMp;
+    }
+    public MediaPlayer setSmallerDuration(MediaPlayer mp, MediaPlayer psmMp) {
+
+        if (mp.getTotalDuration().lessThan(psmMp.getTotalDuration())){
+            return mp;
+
+        }
+        return psmMp;
     }
 }

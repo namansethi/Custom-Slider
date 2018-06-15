@@ -5,7 +5,7 @@
         -fx-inner-border,
         -fx-body-color;
     -fx-background-insets: 0, 1, 2;
-    -fx-background-radius: 0em; /* makes sure this remains circular */
+    -fx-background-radius: 1em; /* makes sure this remains circular */
      -fx-padding: 9 3 9 3;
     -fx-effect: dropshadow(two-pass-box , rgba(0, 0, 0, 0.1), 5, 0.0 , 0, 2);
 
@@ -23,5 +23,10 @@
 }
 #loopButton {
  -fx-background-image: url('media/Loop.jpg');
+
  }
+ #loopButton:selected {
+  -fx-border-color:red;
+
+  }
 
