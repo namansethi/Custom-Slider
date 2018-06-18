@@ -48,32 +48,28 @@ public class Custom_Slider {
                 }
             }
         });
-        //Returns slider 2 as that is the main slider
+    }
+    public void checkWitinBound(Slider mainSlider, RangeSlider sliderLimits){
+
+
     }
     //Sets up tick units, min and max values and the position of upper bound.
-    public RangeSlider setLimitValues(RangeSlider sliderLimits, MediaPlayer biggerDuration) {
-        sliderLimits.setMin(biggerDuration.getStartTime().toSeconds());
-        sliderLimits.setMax(biggerDuration.getStopTime().toSeconds());
-        sliderLimits.setLowValue(biggerDuration.getStartTime().toSeconds());
-        sliderLimits.setHighValue(biggerDuration.getTotalDuration().toSeconds());
+    public RangeSlider setLimitValues(RangeSlider sliderLimits, MediaPlayer smallerDuration) {
+        sliderLimits.setMin(smallerDuration.getStartTime().toSeconds());
+        sliderLimits.setMax(smallerDuration.getStopTime().toSeconds());
+        sliderLimits.setLowValue(smallerDuration.getStartTime().toSeconds());
+        sliderLimits.setHighValue(smallerDuration.getTotalDuration().toSeconds());
 
         return sliderLimits;
     }
     //Sets up tick units, min and max values and the position of main Slider.
-    public Slider setMainSliderValues(Slider mainSlider, MediaPlayer biggerDuration) {
-        mainSlider.setMin(biggerDuration.getStartTime().toSeconds());
-        mainSlider.setMax(biggerDuration.getStopTime().toSeconds());
+    public Slider setMainSliderValues(Slider mainSlider, MediaPlayer smallerDuration) {
+        mainSlider.setMin(smallerDuration.getStartTime().toSeconds());
+        mainSlider.setMax(smallerDuration.getStopTime().toSeconds());
         mainSlider.setMajorTickUnit(1);
         return mainSlider;
     }
-    public MediaPlayer setBiggerDuration(MediaPlayer mp, MediaPlayer psmMp) {
-        System.out.println(psmMp.getTotalDuration());
-        if (mp.getTotalDuration().greaterThan(psmMp.getTotalDuration())){
-        return mp;
 
-        }
-        return psmMp;
-    }
     public MediaPlayer setSmallerDuration(MediaPlayer mp, MediaPlayer psmMp) {
 
         if (mp.getTotalDuration().lessThan(psmMp.getTotalDuration())){

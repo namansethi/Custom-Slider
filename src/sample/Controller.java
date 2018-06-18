@@ -17,7 +17,6 @@ import javafx.scene.media.MediaView;
 import javafx.util.Duration;
 import org.controlsfx.control.RangeSlider;
 import javafx.scene.image.ImageView;
-
 import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -56,13 +55,13 @@ public class Controller implements Initializable {
     private Media psmMe;
     private Boolean loopActive = false;
     private Duration stopTime;
-    private MediaPlayer biggerDuration;
     private MediaPlayer smallerDuration;
 
 
     /////////////////////////////////////////////////////
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
 
 
         String path = new File("src/sample/media/Sample video.mp4").getAbsolutePath();
@@ -77,46 +76,32 @@ public class Controller implements Initializable {
 
         File file = new File("src/sample/media/no video.jpg");
         Image image = new Image(file.toURI().toString());
-        ImageView noVideoMv = new ImageView(image);
-        ImageView noVideoPsm = new ImageView(image);
 
         Custom_Slider customSlider = new Custom_Slider();
-        biggerDuration = mp;
         smallerDuration = mp;
-
-
-
 
         mp.setOnReady(new Runnable() {
             @Override
             public void run() {
-
-                biggerDuration = customSlider.setBiggerDuration(mp, psmMp);
-                smallerDuration = customSlider.setSmallerDuration(mp, psmMp);
-
-                mainSlider = customSlider.setMainSliderValues(mainSlider, biggerDuration);          //Sets up the timescale in terms of seconds
-                sliderLimits = customSlider.setLimitValues(sliderLimits, biggerDuration);           // Uses the biggest video for timescale
-
+                smallerDuration = customSlider.setSmallerDuration(mp,psmMp);
+                mainSlider = customSlider.setMainSliderValues(mainSlider, smallerDuration);          //Sets up the timescale in terms of seconds
+                sliderLimits = customSlider.setLimitValues(sliderLimits, smallerDuration);           // Uses the biggest video for timescale
             }
 
 
         });
 
 
-        biggerDuration.setOnPlaying(new Runnable() {
+        smallerDuration.setOnPlaying(new Runnable() {
             @Override
             public void run() {
                 // Listens to changes of video time
-                biggerDuration.currentTimeProperty().addListener(new ChangeListener<Duration>() {       //Allows slider to move w/ video
+                smallerDuration.currentTimeProperty().addListener(new ChangeListener<Duration>() {       //Allows slider to move w/ video
                     @Override
                     public void changed(ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) {
                         mainSlider.setValue(newValue.toSeconds());
-
-
                     }
-
                 });
-
             }
         });
 
@@ -135,6 +120,7 @@ public class Controller implements Initializable {
                 }
             }
         });
+
 
 
         sliderLimits.highValueProperty().addListener(new ChangeListener<Number>() {
@@ -170,8 +156,8 @@ public class Controller implements Initializable {
         stopButton.setOnAction(new EventHandler<ActionEvent>() {                        //Implements stop action
             @Override
             public void handle(ActionEvent e) {
-                // mp.setOnPaused(()-> System.out.println("player paused"));
-                stopTime = biggerDuration.getCurrentTime();
+
+                stopTime = smallerDuration.getCurrentTime();
                 mp.pause();
                 psmMp.pause();
 
@@ -179,7 +165,7 @@ public class Controller implements Initializable {
                     @Override
                     public void run() {
 
-                        if (mainSlider.getValue() != sliderLimits.getHighValue()) {
+                        if(mainSlider.getValue() != sliderLimits.getHighValue()) {
                             psmMp.seek(stopTime);
                             mp.seek(stopTime);
                         }
@@ -192,9 +178,10 @@ public class Controller implements Initializable {
             @Override
             public void handle(ActionEvent e) {
 
-                if (loopActive == true) {
-                    loopActive = false;
-                } else {
+                if(loopActive == true){
+                  loopActive = false;
+                }
+                else {
 
                     loopActive = true;
                 }
